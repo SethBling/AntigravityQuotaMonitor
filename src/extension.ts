@@ -17,6 +17,9 @@ let statusBarItem: vscode.StatusBarItem;
 let refreshTimer: ReturnType<typeof setInterval> | undefined;
 let cachedModels: ModelQuota[] = [];
 let selectedModelLabel: string | null = null;
+let extensionContext: vscode.ExtensionContext;
+
+const SELECTED_MODEL_KEY = 'antigravityQuota.selectedModel';
 
 // Cache the discovered API port + token to avoid re-probing every refresh
 let cachedPort: number | null = null;
@@ -27,6 +30,10 @@ let cachedCsrfToken: string | null = null;
 // ---------------------------------------------------------------------------
 export function activate(context: vscode.ExtensionContext): void {
     console.log('[QuotaMonitor] Activating...');
+    extensionContext = context;
+
+    // Restore persisted model selection
+    selectedModelLabel = context.globalState.get<string>(SELECTED_MODEL_KEY) ?? null;
 
     // Create status bar item (right-aligned, medium priority)
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 50);
@@ -262,6 +269,7 @@ async function showModelPicker(): Promise<void> {
 
     if (picked) {
         selectedModelLabel = labelMap.get(picked.label) ?? picked.label;
+        extensionContext.globalState.update(SELECTED_MODEL_KEY, selectedModelLabel);
         updateStatusBar();
     }
 }
