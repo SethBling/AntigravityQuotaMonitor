@@ -4,6 +4,10 @@
     "description": "Displays Antigravity model quota usage in the status bar",
     "version": "0.1.0",
     "publisher": "sethbling",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SethBling/AntigravityQuotaMonitor"
+    },
     "engines": {
         "vscode": "^1.85.0"
     },
