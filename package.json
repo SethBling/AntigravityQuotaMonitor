@@ -1,0 +1,50 @@
+{
+    "name": "antigravity-quota-monitor",
+    "displayName": "Antigravity Quota Monitor",
+    "description": "Displays Antigravity model quota usage in the status bar",
+    "version": "0.1.0",
+    "publisher": "sethbling",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "antigravityQuota.selectModel",
+                "title": "Antigravity Quota: Select Model"
+            },
+            {
+                "command": "antigravityQuota.refresh",
+                "title": "Antigravity Quota: Refresh"
+            }
+        ],
+        "configuration": {
+            "title": "Antigravity Quota Monitor",
+            "properties": {
+                "antigravityQuota.refreshIntervalSeconds": {
+                    "type": "number",
+                    "default": 120,
+                    "minimum": 10,
+                    "description": "How often (in seconds) to automatically refresh quota data."
+                }
+            }
+        }
+    },
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "lint": "eslint src --ext ts"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.0",
+        "@types/vscode": "^1.85.0",
+        "typescript": "^5.3.0"
+    }
+}
