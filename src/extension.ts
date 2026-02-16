@@ -175,6 +175,38 @@ async function refreshQuota(isManual: boolean): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// Helper: Time Until formatter
+// ---------------------------------------------------------------------------
+function formatTimeUntil(isoDateString: string): string {
+    if (!isoDateString) {
+        return '';
+    }
+
+    // Ensure we treat the input as UTC if no offset is present
+    const cleanIso = (isoDateString.endsWith('Z') || isoDateString.includes('+'))
+        ? isoDateString
+        : `${isoDateString}Z`;
+
+    const resetDate = new Date(cleanIso);
+    const now = new Date();
+    const diffMs = resetDate.getTime() - now.getTime();
+
+    if (diffMs <= 0) {
+        return 'now';
+    }
+
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+    } else {
+        return `${minutes}m`;
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Status bar rendering
 // ---------------------------------------------------------------------------
 function updateStatusBar(): void {
@@ -210,9 +242,8 @@ function updateStatusBar(): void {
     }
 
     // Build a rich tooltip
-    const resetInfo = model.resetTime
-        ? `Resets: ${model.resetTime.substring(0, 16).replace('T', ' ')}`
-        : '';
+    const timeUntil = formatTimeUntil(model.resetTime);
+    const resetInfo = timeUntil ? `Resets in: ${timeUntil}` : '';
     statusBarItem.tooltip = `${model.label} quota — click to switch model\n${resetInfo}`;
 }
 
@@ -247,9 +278,8 @@ async function showModelPicker(): Promise<void> {
             icon = '🔴';
         }
 
-        const resetInfo = m.resetTime
-            ? `Resets: ${m.resetTime.substring(0, 16).replace('T', ' ')}`
-            : '';
+        const timeUntil = formatTimeUntil(m.resetTime);
+        const resetInfo = timeUntil ? `Resets in: ${timeUntil}` : '';
 
         const displayLabel = `${icon} ${m.label}`;
         labelMap.set(displayLabel, m.label);
